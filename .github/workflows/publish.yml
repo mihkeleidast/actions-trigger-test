@@ -8,20 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Get current tag
         id: get_tag
         run: echo tag="$(git tag --points-at `git rev-parse HEAD`)" >> $GITHUB_OUTPUT
-      - name: Get current branch
-        id: get_branch
-        # 1. Get the list of branches ref where this tag exists
-        # 2. Remove 'origin/' from that result
-        # 3. Put that string in output
-        # => We can now use function 'contains(list, item)''
-        run: |
-          raw=$(git branch -r --contains ${{ github.ref }})
-          echo branch="$(echo ${raw//origin\//} | tr -d '\n')" >> $GITHUB_OUTPUT
       - name: Publish release
         if: ${{ endsWith(github.ref, 'heads/main') && steps.get_tag.outputs.tag != false}}
         run: echo "Tagged commit on main branch, publish release!"
