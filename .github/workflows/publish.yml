@@ -24,7 +24,7 @@ jobs:
         if: ${{ endsWith(github.ref, 'heads/main') && steps.get_tag.outputs.tag == false }}
         run: echo "Untagged commit on main branch, publish canary release!" #shalala
   needs-release:
-    if: ${{ needs.release.outputs.run_rest_jobs == true }}
+    if: ${{ needs.release.outputs.run_rest_jobs }}
     runs-on: ubuntu-latest
     needs: release
     steps:
