@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
       - name: Get current tag
         id: get_tag
         run: echo tag="$(git tag --points-at `git rev-parse HEAD`)" >> $GITHUB_OUTPUT
