@@ -10,7 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get current branch
+        id: get_branch
+        # 1. Get the list of branches ref where this tag exists
+        # 2. Remove 'origin/' from that result
+        # 3. Put that string in output
+        # => We can now use function 'contains(list, item)''
+        run: |
+          raw=$(git branch -r --contains ${{ github.ref }})
+          echo branch="$(echo ${raw//origin\//} | tr -d '\n')" >> $GITHUB_OUTPUT
       - name: Publish release
         env:
           GITHUB_VAR: ${{ toJson(github) }}
-        run: echo "$GITHUB_VAR"
+        run: |
+          echo "${{ steps.get_branch.outputs.branch }}"
+          echo "$GITHUB_VAR"
