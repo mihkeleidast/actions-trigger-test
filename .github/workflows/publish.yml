@@ -22,7 +22,7 @@ jobs:
         env:
           GITHUB_VAR: ${{ toJson(github) }}
         if: ${{ endsWith(github.ref, 'heads/main') && steps.get_tag.outputs.tag == false }}
-        run: echo "Untagged commit on main branch, publish canary release!" #shalala
+        run: echo "Untagged commit on main branch, publish canary release!"
   needs-release:
     if: ${{ needs.release.outputs.run_rest_jobs }}
     runs-on: ubuntu-latest
