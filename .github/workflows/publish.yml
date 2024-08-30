@@ -1,8 +1,6 @@
 name: Publish release
 on:
   push:
-    tags:
-      - '*'
     branches:
       - main
 jobs:
@@ -13,6 +11,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Get current branch
+        id: get_tag
+        run: echo tag="$(git describe --exact-match `git rev-parse HEAD`)" >> $GITHUB_OUTPUT
+      - name: Get current branch
         id: get_branch
         # 1. Get the list of branches ref where this tag exists
         # 2. Remove 'origin/' from that result
@@ -22,8 +23,10 @@ jobs:
           raw=$(git branch -r --contains ${{ github.ref }})
           echo branch="$(echo ${raw//origin\//} | tr -d '\n')" >> $GITHUB_OUTPUT
       - name: Publish release
+        if: ${{ endsWith(github.ref, 'heads/main') && steps.get_tag.outputs.tag != false}}
+        run: echo "Tagged commit on main branch, publish release!"
+      - name: Publish canary release
         env:
           GITHUB_VAR: ${{ toJson(github) }}
-        run: |
-          echo "${{ steps.get_branch.outputs.branch }}"
-          echo "$GITHUB_VAR"
+        if: ${{ endsWith(github.ref, 'heads/main') && steps.get_tag.outputs.tag == false }}
+        run: echo "Untagged commit on main branch, publish canary release!"
