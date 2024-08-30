@@ -20,4 +20,4 @@ jobs:
         env:
           GITHUB_VAR: ${{ toJson(github) }}
         if: ${{ endsWith(github.ref, 'heads/main') && steps.get_tag.outputs.tag == false }}
-        run: echo "Untagged commit on main branch, publish canary release!"
+        run: echo "Untagged commit on main branch, publish canary release!" #shalala
