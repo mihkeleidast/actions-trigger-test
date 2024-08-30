@@ -1,0 +1,12 @@
+name: Publish release
+on:
+  push:
+    branches:
+      - master
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish release
+        run: echo "${{ github.ref }} ${{ github.event.base_ref }}"
