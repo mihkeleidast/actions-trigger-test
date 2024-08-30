@@ -11,4 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Publish release
-        run: echo "${{ github.ref }} ${{ github.event.base_ref }}"
+        env:
+          GITHUB_VAR: ${{ toJson(github) }}
+        run: echo "$GITHUB_VAR"
