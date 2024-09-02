@@ -15,14 +15,24 @@ jobs:
       - name: Get current tag
         id: get_tag
         run: echo tag="$(git tag --points-at `git rev-parse HEAD`)" >> $GITHUB_OUTPUT
+      - name: Extract branch name
+        id: extract_branch
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
       - name: Publish release
         if: ${{ endsWith(github.ref, 'heads/main') && steps.get_tag.outputs.tag != false}}
-        run: echo "Tagged commit on main branch, publish release!"
+        run: |
+          echo "Tagged commit on main branch, publish release!"
+          echo "Tag: ${{ steps.get_tag.outputs.tag }}"
+          echo "Branch: ${{ steps.extract_branch.outputs.branch }}"
       - name: Publish canary release
         env:
           GITHUB_VAR: ${{ toJson(github) }}
         if: ${{ endsWith(github.ref, 'heads/main') && steps.get_tag.outputs.tag == false }}
-        run: echo "Untagged commit on main branch, publish canary release!"
+        run: |
+          echo "Untagged commit on main branch, publish canary release!"
+          echo "Tag: ${{ steps.get_tag.outputs.tag }}"
+          echo "Branch: ${{ steps.extract_branch.outputs.branch }}"
   needs-release:
     if: ${{ needs.release.outputs.run_rest_jobs }}
     runs-on: ubuntu-latest
