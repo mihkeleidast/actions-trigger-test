@@ -23,6 +23,7 @@ jobs:
             echo "branch=development" >> $GITHUB_OUTPUT
           else
             echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          fi
       - name: Publish release
         if: ${{ endsWith(github.ref, 'heads/main') && steps.get_tag.outputs.tag != false}}
         run: |
